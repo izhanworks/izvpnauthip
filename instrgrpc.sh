@@ -83,7 +83,7 @@ systemctl start x-trgrpc.service
 cd /usr/bin
 wget -O addxtrgrpc "https://raw.githubusercontent.com/izhanworks/izvpnauthip/main/addxtrgrpc.sh"
 wget -O delxtrgrpc "https://raw.githubusercontent.com/izhanworks/izvpnauthip/main/delxtrgrpc.sh"
-wget -O delxtrgrpc "https://raw.githubusercontent.com/izhanworks/izvpnauthip/main/cekxtrgrpc.sh"
+wget -O cekxtrgrpc "https://raw.githubusercontent.com/izhanworks/izvpnauthip/main/cekxtrgrpc.sh"
 chmod +x addxtrgrpc
 chmod +x delxtrgrpc
 chmod +x cekxtrgrpc
