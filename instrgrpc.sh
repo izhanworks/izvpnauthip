@@ -1,6 +1,6 @@
-cat > /etc/xray/akuntrgrpc.conf <<END
+cat > /etc/xray/akuntrgrpc.conf << EOF
 #xray-trojangrpc user
-END
+EOF
 
 cat > /etc/systemd/system/x-trgrpc.service << EOF
 [Unit]
@@ -20,7 +20,7 @@ LimitNOFILE=1000000
 WantedBy=multi-user.target
 EOF
 
-cat > /etc/xray/trojangrpc.json <<END
+cat > /etc/xray/trojangrpc.json << EOF
 {
     "log": {
             "access": "/var/log/xray/access5.log",
@@ -68,7 +68,7 @@ cat > /etc/xray/trojangrpc.json <<END
         }
     ]
 }
-END
+EOF
 
 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 653 -j ACCEPT
 iptables -I INPUT -m state --state NEW -m udp -p udp --dport 653 -j ACCEPT
