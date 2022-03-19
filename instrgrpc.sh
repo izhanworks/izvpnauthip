@@ -68,7 +68,7 @@ cat > /etc/xray/trojangrpc.json <<END
         }
     ]
 }
-
+END
 
 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport 653 -j ACCEPT
 iptables -I INPUT -m state --state NEW -m udp -p udp --dport 653 -j ACCEPT
