@@ -2510,7 +2510,7 @@ uuid=$(cat /proc/sys/kernel/random/uuid)
 sed -i '/#trojanTLS$/a\#! '"$userna $exp"'\
 },{"password": "'""$uuid""'","email": "'""$userna""'"' /etc/$raycheck/config.json
 
-trojanlink="trojan://${uuid}@${domain}:${tr}"
+trojanlink="trojan://${uuid}@${domain}:${tr}#$userna"
 
 local env_msg
 env_msg="━━━━━━━━━━━━━━━━━━━━━\n<b>     🔸 TROJAN ACCOUNT 🔸 </b>\n━━━━━━━━━━━━━━━━━━━━━\n"
@@ -2551,7 +2551,7 @@ uuid=$(cat /proc/sys/kernel/random/uuid)
 sed -i '/#trojanTLS$/a\#! '"$userna $exp"'\
 },{"password": "'""$uuid""'","email": "'""$userna""'"' /etc/$raycheck/config.json
 
-trojanlink="trojan://${uuid}@${domain}:${tr}"
+trojanlink="trojan://${uuid}@${domain}:${tr}#$userna"
 
 local env_msg
 env_msg="━━━━━━━━━━━━━━━━━━━━━\n<b>     🔸 TROJAN ACCOUNT 🔸 </b>\n━━━━━━━━━━━━━━━━━━━━━\n"
@@ -2602,7 +2602,7 @@ uuid=$(cat /proc/sys/kernel/random/uuid)
 sed -i '/#trojanTLS$/a\#! '"$userna $exp"'\
 },{"password": "'""$uuid""'","email": "'""$userna""'"' /etc/$raycheck/config.json
 
-trojanlink="trojan://${uuid}@${domain}:${tr}"
+trojanlink="trojan://${uuid}@${domain}:${tr}#$userna"
 
 local env_msg
 env_msg="━━━━━━━━━━━━━━━━━━━━━\n<b>     🔸 TROJAN ACCOUNT 🔸 </b>\n━━━━━━━━━━━━━━━━━━━━━\n"
@@ -2644,7 +2644,7 @@ uuid=$(cat /proc/sys/kernel/random/uuid)
 sed -i '/#trojanTLS$/a\#! '"$userna $exp"'\
 },{"password": "'""$uuid""'","email": "'""$userna""'"' /etc/$raycheck/config.json
 
-trojanlink="trojan://${uuid}@${domain}:${tr}"
+trojanlink="trojan://${uuid}@${domain}:${tr}#$userna"
 
 local env_msg
 env_msg="━━━━━━━━━━━━━━━━━━━━━\n<b>     🔸 TROJAN ACCOUNT 🔸 </b>\n━━━━━━━━━━━━━━━━━━━━━\n"
@@ -2792,7 +2792,7 @@ chmod +x /etc/.maAsiss/$userna.sh
 echo "/etc/.maAsiss/$userna.sh" | at now + $t_time hour >/dev/null 2>&1
 [[ "$t_time" == '1' ]] && hrs="hour" || hrs="hours"          
 
-trojanlink="trojan://${uuid}@${domain}:${tr}"
+trojanlink="trojan://${uuid}@${domain}:${tr}#$userna"
 
 local env_msg
 env_msg="━━━━━━━━━━━━━━━━━━━━━\n<b>     🔸 TROJAN ACCOUNT 🔸 </b>\n━━━━━━━━━━━━━━━━━━━━━\n"
@@ -7674,7 +7674,7 @@ uuid=$(cat /proc/sys/kernel/random/uuid)
 sed -i '/#trojanTLS$/a\#! '"$userna $exp"'\
 },{"password": "'""$uuid""'","email": "'""$userna""'"' /etc/$raycheck/config.json
 
-trojanlink="trojan://${uuid}@${domain}:${tr}"
+trojanlink="trojan://${uuid}@${domain}:${tr}#$userna"
 
 local env_msg
 env_msg="━━━━━━━━━━━━━━━━━━━━━\n<b>    🔸 TROJAN ACCOUNT 🔸 </b>\n━━━━━━━━━━━━━━━━━━━━━\n"
