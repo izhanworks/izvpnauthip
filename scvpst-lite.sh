@@ -93,10 +93,6 @@ SSH : [ON]
 VMESS : [ON]
 VLESS : [ON]
 TROJAN : [ON]
-TROJAN-GO : [ON]
-WIREGUARD : [ON]
-SHADOWSOCK: [ON]
-SHADOWSOCKS-R : [ON]
 EOF
 }
 
@@ -195,58 +191,8 @@ Disable_Order() {
          echo ${message_message_id[$id]} + 1 | bc >> /tmp/msgid
          }
      }
-     [[ "$(grep -wc "trgo" "/tmp/order")" = '1' ]] && {
-         touch /etc/.maAsiss/.cache/DisableOrderTROJANGO
-         sed -i "/TROJAN-GO/c\TROJAN-GO : [OFF]" /etc/.maAsiss/.cache/StatusDisable
-         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-             --text "✅ Success Disabled Trojan-GO" \
-             --parse_mode html
-         [[ -f /tmp/msgid ]] && {
-             dx=$(cat /tmp/msgid | tail -1)
-             echo $dx + 1 | bc >> /tmp/msgid
-         } || {
-         echo ${message_message_id[$id]} + 1 | bc >> /tmp/msgid
-         }
-     }
-     [[ "$(grep -wc "wg" "/tmp/order")" = '1' ]] && {
-         touch /etc/.maAsiss/.cache/DisableOrderWG
-         sed -i "/WIREGUARD/c\WIREGUARD : [OFF]" /etc/.maAsiss/.cache/StatusDisable
-         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-             --text "✅ Success Disabled Wireguard" \
-             --parse_mode html
-         [[ -f /tmp/msgid ]] && {
-             dx=$(cat /tmp/msgid | tail -1)
-             echo $dx + 1 | bc >> /tmp/msgid
-         } || {
-         echo ${message_message_id[$id]} + 1 | bc >> /tmp/msgid
-         }
-     }
-     [[ "$(grep -wc "ss" "/tmp/order")" = '1' ]] && {
-         touch /etc/.maAsiss/.cache/DisableOrderSS
-         sed -i "/^SHADOWSOCK:/c\SHADOWSOCK: [OFF]" /etc/.maAsiss/.cache/StatusDisable
-         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-             --text "✅ Success Disabled Shadowsocks" \
-             --parse_mode html
-         [[ -f /tmp/msgid ]] && {
-             dx=$(cat /tmp/msgid | tail -1)
-             echo $dx + 1 | bc >> /tmp/msgid
-         } || {
-         echo ${message_message_id[$id]} + 1 | bc >> /tmp/msgid
-         }
-     }
-     [[ "$(grep -wc "ssr" "/tmp/order")" = '1' ]] && {
-         touch /etc/.maAsiss/.cache/DisableOrderSSR
-         sed -i "/SHADOWSOCKS-R/c\SHADOWSOCKS-R : [OFF]" /etc/.maAsiss/.cache/StatusDisable
-         ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-             --text "✅ Success Disabled Shadowsocks-R" \
-             --parse_mode html
-         [[ -f /tmp/msgid ]] && {
-             dx=$(cat /tmp/msgid | tail -1)
-             echo $dx + 1 | bc >> /tmp/msgid
-         } || {
-         echo ${message_message_id[$id]} + 1 | bc >> /tmp/msgid
-         }
-     }
+     
+     
      [[ -f /tmp/msgid ]] && {
      while read msg_id; do
          ShellBot.deleteMessage	--chat_id ${message_chat_id[$id]} \
@@ -255,14 +201,10 @@ Disable_Order() {
      rm -f /tmp/msgid
      }
      [[ "$(grep -wc "off" "/tmp/order")" = '1' ]] && {
-         rm -f /etc/.maAsiss/.cache/DisableOrderWG
          rm -f /etc/.maAsiss/.cache/DisableOrderSSH
          rm -f /etc/.maAsiss/.cache/DisableOrderVMESS
          rm -f /etc/.maAsiss/.cache/DisableOrderVLESS
          rm -f /etc/.maAsiss/.cache/DisableOrderTROJAN
-         rm -f /etc/.maAsiss/.cache/DisableOrderTROJANGO
-         rm -f /etc/.maAsiss/.cache/DisableOrderSS
-         rm -f /etc/.maAsiss/.cache/DisableOrderSSR
          sed -i "s/\[OFF\]/\[ON\]/g" /etc/.maAsiss/.cache/StatusDisable
          bdx=$(echo ${message_message_id[$id]} + 1 | bc)
          ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
@@ -336,13 +278,6 @@ hargassh=$(grep -w "Price SSH" /etc/.maAsiss/price | awk '{print $NF}')
 hargavmess=$(grep -w "Price VMess" /etc/.maAsiss/price | awk '{print $NF}')
 hargavless=$(grep -w "Price VLess" /etc/.maAsiss/price | awk '{print $NF}')
 hargatrojan=$(grep -w "Price Trojan :" /etc/.maAsiss/price | awk '{print $NF}')
-hargatrgo=$(grep -w "Price Trojan-GO" /etc/.maAsiss/price | awk '{print $NF}')
-hargawg=$(grep -w "Price Wireguard" /etc/.maAsiss/price | awk '{print $NF}')
-hargass=$(grep -w "Price Shadowsocks :" /etc/.maAsiss/price | awk '{print $NF}')
-hargassr=$(grep -w "Price Shadowsocks-R" /etc/.maAsiss/price | awk '{print $NF}')
-hargasstp=$(grep -w "Price SSTP" /etc/.maAsiss/price | awk '{print $NF}')
-hargal2tp=$(grep -w "Price L2TP" /etc/.maAsiss/price | awk '{print $NF}')
-hargapptp=$(grep -w "Price PPTP" /etc/.maAsiss/price | awk '{print $NF}')
 
     [[ "${message_from_id[$id]}" == "$Admin_ID" ]] && {
         local env_msg
@@ -364,14 +299,7 @@ hargapptp=$(grep -w "Price PPTP" /etc/.maAsiss/price | awk '{print $NF}')
         env_msg+="<code>SSH            : $hargassh\n"
         env_msg+="VMess          : $hargavmess\n"
         env_msg+="VLess          : $hargavless\n"
-        env_msg+="Trojan         : $hargatrojan\n"
-        env_msg+="Trojan-Go      : $hargatrgo\n"
-        env_msg+="Wireguard      : $hargawg\n"
-        env_msg+="Shadowsocks    : $hargass\n"
-        env_msg+="Shadowsocks-R  : $hargassr\n"
-        env_msg+="SSTP           : $hargasstp\n"
-        env_msg+="PPTP           : $hargapptp\n"
-        env_msg+="L2TP           : $hargal2tp</code>\n"
+        env_msg+="Trojan         : $hargatrojan</code>\n"
         env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
         env_msg+="🤵 Admin Panel : $admin_bot_panel 🤵\n"
         env_msg+="💡 Limit Trial : $_limTotal users 💡\n"
@@ -446,14 +374,6 @@ info_port() {
         portvlesstls=$(grep -w "Vless TLS" /root/log-install.txt | awk '{print $NF}')
         portvless=$(grep -w "Vless None TLS" /root/log-install.txt | awk '{print $NF}')
         porttr=$(grep -w "Trojan " /root/log-install.txt | awk '{print $NF}')
-        porttrgo=$(grep -w "Trojan Go" /root/log-install.txt | awk '{print $NF}')
-        portwg=$(grep -w "Wireguard" /root/log-install.txt | awk '{print $NF}')
-        portsstp=$(grep -w "SSTP VPN" /root/log-install.txt | awk '{print $NF}')
-        portl2tp=$(grep -w "L2TP/IPSEC VPN" /root/log-install.txt | awk '{print $NF}')
-        portpptp=$(grep -w "PPTP VPN" /root/log-install.txt | awk '{print $NF}')
-        portsstls=$(grep -w "SS-OBFS TLS" /root/log-install.txt | awk '{print $NF}')
-        portss=$(grep -w "SS-OBFS HTTP" /root/log-install.txt | awk '{print $NF}')
-        portssR=$(grep -w "Shadowsocks-R" /root/log-install.txt | awk '{print $NF}')
         OhpSSH=`cat /root/log-install.txt | grep -w "OHP SSH" | cut -d: -f2 | awk '{print $1}'`
         OhpDB=`cat /root/log-install.txt | grep -w "OHP DBear" | cut -d: -f2 | awk '{print $1}'`
         OhpOVPN=`cat /root/log-install.txt | grep -w "OHP OpenVPN" | cut -d: -f2 | awk '{print $1}'`
@@ -478,14 +398,6 @@ info_port() {
         env_msg+="Vless TLS : $portvlesstls\n"
         env_msg+="Vless HTTP : $portvless\n"
         env_msg+="Trojan : $porttr\n"
-        env_msg+="Trojan-GO : $porttrgo\n"
-        env_msg+="Wireguard : $portwg\n"
-        env_msg+="SSTP VPN: $portsstp\n"
-        env_msg+="L2TP VPN : $portl2tp\n"
-        env_msg+="PPTP VPN : $portpptp\n"
-        env_msg+="SS-OBFS TLS : $portsstls\n"
-        env_msg+="SS-OBFS HTTP : $portss\n"
-        env_msg+="Shadowsocks-R : $portssR\n"
         env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
         ShellBot.editMessageText --chat_id ${callback_query_message_chat_id[$id]} \
             --message_id ${callback_query_message_message_id[$id]} \
@@ -505,13 +417,6 @@ hargassh=$(grep -w "Price SSH" /etc/.maAsiss/price | awk '{print $NF}')
 hargavmess=$(grep -w "Price VMess" /etc/.maAsiss/price | awk '{print $NF}')
 hargavless=$(grep -w "Price VLess" /etc/.maAsiss/price | awk '{print $NF}')
 hargatrojan=$(grep -w "Price Trojan :" /etc/.maAsiss/price | awk '{print $NF}')
-hargatrgo=$(grep -w "Price Trojan-GO" /etc/.maAsiss/price | awk '{print $NF}')
-hargawg=$(grep -w "Price Wireguard" /etc/.maAsiss/price | awk '{print $NF}')
-hargass=$(grep -w "Price Shadowsocks :" /etc/.maAsiss/price | awk '{print $NF}')
-hargassr=$(grep -w "Price Shadowsocks-R" /etc/.maAsiss/price | awk '{print $NF}')
-hargasstp=$(grep -w "Price SSTP" /etc/.maAsiss/price | awk '{print $NF}')
-hargal2tp=$(grep -w "Price L2TP" /etc/.maAsiss/price | awk '{print $NF}')
-hargapptp=$(grep -w "Price PPTP" /etc/.maAsiss/price | awk '{print $NF}')
 
 [[ "${callback_query_from_id[$id]}" == "$Admin_ID" ]] || [[ "$(grep -wc ${callback_query_from_id} $User_Active)" != '0' ]] && {
         local env_msg
@@ -520,14 +425,7 @@ hargapptp=$(grep -w "Price PPTP" /etc/.maAsiss/price | awk '{print $NF}')
         env_msg+="<code>SSH            : $hargassh\n"
         env_msg+="VMess          : $hargavmess\n"
         env_msg+="VLess          : $hargavless\n"
-        env_msg+="Trojan         : $hargatrojan\n"
-        env_msg+="Trojan-Go      : $hargatrgo\n"
-        env_msg+="Wireguard      : $hargawg\n"
-        env_msg+="Shadowsocks    : $hargass\n"
-        env_msg+="Shadowsocks-R  : $hargassr\n"
-        env_msg+="SSTP           : $hargasstp\n"
-        env_msg+="PPTP           : $hargapptp\n"
-        env_msg+="L2TP           : $hargal2tp</code>\n"
+        env_msg+="Trojan         : $hargatrojan</code>\n"
         env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
         ShellBot.editMessageText --chat_id ${callback_query_message_chat_id[$id]} \
             --message_id ${callback_query_message_message_id[$id]} \
@@ -566,10 +464,6 @@ menu_reserv() {
         stsVMESS=$(grep -w "VMESS" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
         stsVLESS=$(grep -w "VLESS" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
         stsTROJAN=$(grep -w "TROJAN :" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
-        stsTROJANGO=$(grep -w "TROJAN-GO" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
-        stsWG=$(grep -w "WIREGUARD" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
-        stsSS=$(grep -w "SHADOWSOCK:" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
-        stsSSR=$(grep -w "SHADOWSOCKS-R" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
         local env_msg
         env_msg="━━━━━━━━━━━━━━━━━━━━━\n"
         env_msg+="<b> WELCOME TO BOT $nameStore</b>\n"
@@ -578,11 +472,7 @@ menu_reserv() {
         env_msg+="<code>SSH            : $stsSSH\n"
         env_msg+="VMess          : $stsVMESS\n"
         env_msg+="VLess          : $stsVLESS\n"
-        env_msg+="Trojan         : $stsTROJAN\n"
-        env_msg+="Trojan-Go      : $stsTROJANGO\n"
-        env_msg+="Wireguard      : $stsWG\n"
-        env_msg+="Shadowsocks    : $stsSS\n"
-        env_msg+="Shadowsocks-R  : $stsSSR</code>\n"
+        env_msg+="Trojan         : $stsTROJAN</code>\n"
         env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
 
 [[ "${callback_query_from_id[$id]}" == "$Admin_ID" ]] || [[ "$(grep -wc ${callback_query_from_id} $User_Active)" != '0' ]] && {
@@ -604,10 +494,6 @@ status_order() {
         stsVMESS=$(grep -w "VMESS" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
         stsVLESS=$(grep -w "VLESS" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
         stsTROJAN=$(grep -w "TROJAN :" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
-        stsTROJANGO=$(grep -w "TROJAN-GO" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
-        stsWG=$(grep -w "WIREGUARD" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
-        stsSS=$(grep -w "SHADOWSOCK:" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
-        stsSSR=$(grep -w "SHADOWSOCKS-R" /etc/.maAsiss/.cache/StatusDisable | awk '{print $NF}')
         local env_msg
         env_msg="━━━━━━━━━━━━━━━━━━━━━\n"
         env_msg+="<b> WELCOME TO BOT $nameStore</b>\n"
@@ -616,11 +502,7 @@ status_order() {
         env_msg+="<code>SSH            : $stsSSH\n"
         env_msg+="VMess          : $stsVMESS\n"
         env_msg+="VLess          : $stsVLESS\n"
-        env_msg+="Trojan         : $stsTROJAN\n"
-        env_msg+="Trojan-Go      : $stsTROJANGO\n"
-        env_msg+="Wireguard      : $stsWG\n"
-        env_msg+="Shadowsocks    : $stsSS\n"
-        env_msg+="Shadowsocks-R  : $stsSSR</code>\n"
+        env_msg+="Trojan         : $stsTROJAN</code>\n"
         env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
     [[ "${callback_query_from_id[$id]}" == "$Admin_ID" ]] || [[ "$(grep -wc ${callback_query_from_id} $User_Active)" != '0' ]] && {
         ShellBot.editMessageText --chat_id ${callback_query_message_chat_id[$id]} \
@@ -645,11 +527,7 @@ how_to_order() {
         env_msg+="<code>SSH            : ssh\n"
         env_msg+="VMess          : vmess\n"
         env_msg+="VLess          : vless\n"
-        env_msg+="Trojan         : trojan\n"
-        env_msg+="Trojan-Go      : trgo\n"
-        env_msg+="Wireguard      : wg\n"
-        env_msg+="Shadowsocks    : ss\n"
-        env_msg+="Shadowsocks-R  : ssr</code>\n"
+        env_msg+="Trojan         : trojan</code>\n"
         env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
         env_msg+="usage: /disable[space][code]\n"
         env_msg+="example: <code>/disable ssh</code>\n\n"
@@ -732,13 +610,6 @@ hargassh=$(grep -w "Price SSH" /etc/.maAsiss/price | awk '{print $NF}')
 hargavmess=$(grep -w "Price VMess" /etc/.maAsiss/price | awk '{print $NF}')
 hargavless=$(grep -w "Price VLess" /etc/.maAsiss/price | awk '{print $NF}')
 hargatrojan=$(grep -w "Price Trojan :" /etc/.maAsiss/price | awk '{print $NF}')
-hargatrgo=$(grep -w "Price Trojan-GO" /etc/.maAsiss/price | awk '{print $NF}')
-hargawg=$(grep -w "Price Wireguard" /etc/.maAsiss/price | awk '{print $NF}')
-hargass=$(grep -w "Price Shadowsocks :" /etc/.maAsiss/price | awk '{print $NF}')
-hargassr=$(grep -w "Price Shadowsocks-R" /etc/.maAsiss/price | awk '{print $NF}')
-hargasstp=$(grep -w "Price SSTP" /etc/.maAsiss/price | awk '{print $NF}')
-hargal2tp=$(grep -w "Price L2TP" /etc/.maAsiss/price | awk '{print $NF}')
-hargapptp=$(grep -w "Price PPTP" /etc/.maAsiss/price | awk '{print $NF}')
 
     if [[ "$(grep -w "${message_from_id}" $User_Active | grep -wc 'reseller')" != '0' ]]; then
         _SaldoTotal=$(grep -w 'Saldo_Reseller' /etc/.maAsiss/db_reseller/${callback_query_from_id}/${callback_query_from_id} | awk '{print $NF}')       
@@ -750,14 +621,7 @@ hargapptp=$(grep -w "Price PPTP" /etc/.maAsiss/price | awk '{print $NF}')
         env_msg+="<code>SSH            : $hargassh\n"
         env_msg+="VMess          : $hargavmess\n"
         env_msg+="VLess          : $hargavless\n"
-        env_msg+="Trojan         : $hargatrojan\n"
-        env_msg+="Trojan-Go      : $hargatrgo\n"
-        env_msg+="Wireguard      : $hargawg\n"
-        env_msg+="Shadowsocks    : $hargass\n"
-        env_msg+="Shadowsocks-R  : $hargassr\n"
-        env_msg+="SSTP           : $hargasstp\n"
-        env_msg+="PPTP           : $hargapptp\n"
-        env_msg+="L2TP           : $hargal2tp</code>\n"
+        env_msg+="Trojan         : $hargatrojan</code>\n"
         env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
         env_msg+="🤵 Admin Panel : $admin_bot_panel 🤵\n"
         env_msg+="💡 Limit Trial : $_limTotal users💡\n"
@@ -772,7 +636,7 @@ hargapptp=$(grep -w "Price PPTP" /etc/.maAsiss/price | awk '{print $NF}')
         return 0
     else
         ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-         --text "⛔ ACCESS DENIED ⛔"
+         --text "⛔ ACCESS DENIED ⛔"=2
         return 0
     fi
 }
@@ -1454,13 +1318,6 @@ cret_res() {
     mkdir -p /etc/.maAsiss/db_reseller/"$uname_res"/user_ray
     mkdir -p /etc/.maAsiss/db_reseller/"$uname_res"/user_vless
     mkdir -p /etc/.maAsiss/db_reseller/"$uname_res"/user_trojan
-    mkdir -p /etc/.maAsiss/db_reseller/"$uname_res"/user_wg
-    mkdir -p /etc/.maAsiss/db_reseller/"$uname_res"/user_ss
-    mkdir -p /etc/.maAsiss/db_reseller/"$uname_res"/user_ssr
-    mkdir -p /etc/.maAsiss/db_reseller/"$uname_res"/user_sstp
-    mkdir -p /etc/.maAsiss/db_reseller/"$uname_res"/user_l2tp
-    mkdir -p /etc/.maAsiss/db_reseller/"$uname_res"/user_pptp
-    mkdir -p /etc/.maAsiss/db_reseller/"$uname_res"/user_trgo
     touch /etc/.maAsiss/db_reseller/"$uname_res"/$uname_res
     echo -e "USER: $uname_res SALDO: $saldo_res TYPE: $t_res" >>$User_Active
     echo -e "Name: $name_res TOKEN: $Token" >> $Res_Token
@@ -1883,7 +1740,7 @@ cat> /etc/$raycheck/$userna-tls.json <<-EOF
 "add": "${domain}",
 "port": "${tls}",
 "id": "${uuid}",
-"aid": "64",
+"aid": "0",
 "net": "ws",
 "path": "/${raycheck}ws",
 "type": "none",
@@ -1898,7 +1755,7 @@ cat> /etc/$raycheck/$userna-none.json <<-EOF
 "add": "${domain}",
 "port": "${none}",
 "id": "${uuid}",
-"aid": "64",
+"aid": "0",
 "net": "ws",
 "path": "/${raycheck}ws",
 "type": "none",
@@ -1979,7 +1836,7 @@ cat> /etc/$raycheck/$userna-tls.json <<-EOF
 "add": "${domain}",
 "port": "${tls}",
 "id": "${uuid}",
-"aid": "64",
+"aid": "0",
 "net": "ws",
 "path": "/${raycheck}ws",
 "type": "none",
@@ -1994,7 +1851,7 @@ cat> /etc/$raycheck/$userna-none.json <<-EOF
 "add": "${domain}",
 "port": "${none}",
 "id": "${uuid}",
-"aid": "64",
+"aid": "0",
 "net": "ws",
 "path": "/${raycheck}ws",
 "type": "none",
@@ -2066,7 +1923,7 @@ cat> /etc/$raycheck/$userna-tls.json <<-EOF
 "add": "${domain}",
 "port": "${tls}",
 "id": "${uuid}",
-"aid": "64",
+"aid": "0",
 "net": "ws",
 "path": "/${raycheck}ws",
 "type": "none",
@@ -2081,7 +1938,7 @@ cat> /etc/$raycheck/$userna-none.json <<-EOF
 "add": "${domain}",
 "port": "${none}",
 "id": "${uuid}",
-"aid": "64",
+"aid": "0",
 "net": "ws",
 "path": "/${raycheck}ws",
 "type": "none",
@@ -2235,7 +2092,7 @@ cat> /etc/$raycheck/$userna-tls.json <<-EOF
 "add": "${domain}",
 "port": "${tls}",
 "id": "${uuid}",
-"aid": "64",
+"aid": "0",
 "net": "ws",
 "path": "/${raycheck}ws",
 "type": "none",
@@ -2250,7 +2107,7 @@ cat> /etc/$raycheck/$userna-none.json <<-EOF
 "add": "${domain}",
 "port": "${none}",
 "id": "${uuid}",
-"aid": "64",
+"aid": "0",
 "net": "ws",
 "path": "/${raycheck}ws",
 "type": "none",
@@ -2296,7 +2153,7 @@ env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
 env_msg+="Port TLS : $tls\n"
 env_msg+="Port None TLS : $none\n"
 env_msg+="ID : $uuid\n"
-env_msg+="AlterID : 64\n"
+env_msg+="AlterID : 0\n"
 env_msg+="Security : auto\n"
 env_msg+="Network : websocket/ws\n"
 env_msg+="Path : /${raycheck}ws\n"
@@ -6574,461 +6431,6 @@ ShellBot.regHandleFunction --function menu_reserv --callback_data _res_gobackppt
 unset keyboardpptpres
 keyboardpptpres="$(ShellBot.InlineKeyboardMarkup -b 'res_menu_pptp')"
 
-#====== ALL ABOUT TRGO =======#
-
-res_trgo_menus() {
-    [[ "${callback_query_from_id[$id]}" == "$Admin_ID" ]] || [[ "$(grep -wc ${callback_query_from_id} $User_Active)" != '0' ]] && {
-        ShellBot.editMessageText --chat_id ${callback_query_message_chat_id[$id]} \
-            --message_id ${callback_query_message_message_id[$id]} \
-            --text "SELECT AN OPTION BELOW:" \
-            --reply_markup "$(ShellBot.InlineKeyboardMarkup --button 'res_menu_trgo')"
-        return 0
-    }
-}
-
-trgo_menus() {
-    [[ "${callback_query_from_id[$id]}" == "$Admin_ID" ]] || [[ "$(grep -wc ${callback_query_from_id} $User_Active)" != '0' ]] && {
-        ShellBot.editMessageText --chat_id ${callback_query_message_chat_id[$id]} \
-            --message_id ${callback_query_message_message_id[$id]} \
-            --text "SELECT AN OPTION BELOW:" \
-            --reply_markup "$(ShellBot.InlineKeyboardMarkup --button 'menu_trgo')"
-        return 0
-    }
-}
-
-add_trgo() {
-    [[ "${callback_query_from_id[$id]}" == "$Admin_ID" ]] || [[ "$(grep -wc ${callback_query_from_id} $User_Active)" != '0' ]] && {
-        ShellBot.deleteMessage	--chat_id ${callback_query_message_chat_id[$id]} \
-              --message_id ${callback_query_message_message_id[$id]}
-        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-            --text "👤 CREATE USER Trojan-GO 👤\n\nUsername:" \
-            --reply_markup "$(ShellBot.ForceReply)"
-    } || {
-        ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-            --text "⛔ ACCESS DENIED ⛔"
-        return 0
-    }
-}
-
-func_add_trgo() {
-[[ "${message_from_id[$id]}" != "$Admin_ID" ]] && {
-    [[ -f /etc/.maAsiss/.cache/DisableOrderTROJANGO ]] && {
-            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                    --text "⛔ Disable Order Trojan-Go" \
-                    --parse_mode html
-            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                   --text "Func Error Do Nothing" \
-                   --reply_markup "$(ShellBot.ForceReply)"
-            return 0
-    }
-}
-
-file_user=$1
-userna=$(sed -n '1 p' $file_user | cut -d' ' -f2)
-data=$(sed -n '2 p' $file_user | cut -d' ' -f2)
-exp=$(echo "$data" | awk -F'/' '{print $2FS$1FS$3}' | xargs -i date -d'{}' +%Y-%m-%d)        
-domain=$(cat /etc/$raycheck/domain)
-trgo="$(cat /root/log-install.txt | grep -w "Trojan Go" | cut -d: -f2|sed 's/ //g')"
-
-[[ "${message_from_id[$id]}" = "$Admin_ID" ]] && {
-mkdir -p /etc/.maAsiss/info-user-trgo
-echo "$userna:$data" >/etc/.maAsiss/info-user-trgo/$userna
-
-uuidR=$(cat /proc/sys/kernel/random/uuid)
-uuid=$(cat /etc/trojan-go/idtrojango)
-sed -i '/"'""$uuid""'"$/a\,"'""$uuidR""'"' /etc/trojan-go/config.json
-echo -e "### $userna $exp $uuidR" | tee -a /etc/trojan-go/akun.conf
-linktrgo="trojan-go://${uuidR}@${domain}:${trgo}/?sni=${domain}%26type=ws%26host=${domain}%26path=/scvps%26encryption=none#${userna}"
-
-local env_msg
-env_msg="━━━━━━━━━━━━━━━━━━━━━\n<b>       🔸 TROJAN GO ACCOUNT 🔸 </b>\n━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Address : $domain\n"
-env_msg+="User : $userna\n"
-env_msg+="Expired On : $data 🗓 \n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Port : $trgo\n"
-env_msg+="Key : $uuidR\n"
-env_msg+="Network : ws\n"
-env_msg+="Path : /scvps\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Link TRGO: \n\n"
-env_msg+="<code>$linktrgo</code>\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-
-ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-    --text "$env_msg" \
-    --parse_mode html
-systemctl restart trojan-go > /dev/null 2>&1
-return 0
-}
-
-pricetrgo=$(grep -w "Price Trojan-GO" /etc/.maAsiss/price | awk '{print $NF}')
-saldores=$(grep -w "Saldo_Reseller" /etc/.maAsiss/db_reseller/${message_from_id}/${message_from_id} | awk '{print $NF}')
-if [ "$saldores" -lt "$pricetrgo" ]; then
-ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-    --text "⛔ Your Balance Not Enough ⛔" \
-    --parse_mode html
-return 0
-else
-mkdir -p /etc/.maAsiss/info-user-trgo
-mkdir -p /etc/.maAsiss/db_reseller/${message_from_id}/user_trgo
-echo "$userna:$data" >/etc/.maAsiss/db_reseller/${message_from_id}/user_trgo/$userna
-echo "$userna:$data" >/etc/.maAsiss/info-user-trgo/$userna
-_CurrSal=$(echo $saldores - $pricetrgo | bc)
-sed -i "/Saldo_Reseller/c\Saldo_Reseller: $_CurrSal" /etc/.maAsiss/db_reseller/${message_from_id}/${message_from_id}
-sed -i "/${message_from_id}/c\USER: ${message_from_id} SALDO: $_CurrSal TYPE: reseller" $User_Active
-
-uuidR=$(cat /proc/sys/kernel/random/uuid)
-uuid=$(cat /etc/trojan-go/idtrojango)
-sed -i '/"'""$uuid""'"$/a\,"'""$uuidR""'"' /etc/trojan-go/config.json
-echo -e "### $userna $exp $uuidR" | tee -a /etc/trojan-go/akun.conf
-linktrgo="trojan-go://${uuidR}@${domain}:${trgo}/?sni=${domain}%26type=ws%26host=${domain}%26path=/scvps%26encryption=none#${userna}"
-
-local env_msg
-env_msg="━━━━━━━━━━━━━━━━━━━━━\n<b>       🔸 TROJAN GO ACCOUNT 🔸 </b>\n━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Address : $domain\n"
-env_msg+="User : $userna\n"
-env_msg+="Expired On : $data 🗓 \n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Port : $trgo\n"
-env_msg+="Key : $uuidR\n"
-env_msg+="Network : ws\n"
-env_msg+="Path : /scvps\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Link TRGO: \n\n"
-env_msg+="<code>$linktrgo</code>\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-echo "$userna 30Days TROJAN-GO | ${message_from_username}" >> /etc/.maAsiss/log_res
-
-ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-    --text "$env_msg" \
-    --parse_mode html
-systemctl restart trojan-go > /dev/null 2>&1
-return 0
-fi
-}
-
-func_add_trgo2() {
-[[ "${message_from_id[$id]}" != "$Admin_ID" ]] && {
-    [[ -f /etc/.maAsiss/.cache/DisableOrderTROJANGO ]] && {
-            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                    --text "⛔ Disable Order Trojan-Go" \
-                    --parse_mode html
-            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                   --text "Func Error Do Nothing" \
-                   --reply_markup "$(ShellBot.ForceReply)"
-            return 0
-    }
-}
-
-file_user=$1
-userna=$(sed -n '1 p' $file_user | cut -d' ' -f2)
-data=$(sed -n '2 p' $file_user | cut -d' ' -f2)
-exp=$(echo "$data" | awk -F'/' '{print $2FS$1FS$3}' | xargs -i date -d'{}' +%Y-%m-%d)        
-domain=$(cat /etc/$raycheck/domain)
-trgo="$(cat /root/log-install.txt | grep -w "Trojan Go" | cut -d: -f2|sed 's/ //g')"
-
-[[ "${message_from_id[$id]}" = "$Admin_ID" ]] && {
-mkdir -p /etc/.maAsiss/info-user-trgo
-echo "$userna:$data" >/etc/.maAsiss/info-user-trgo/$userna
-
-uuidR=$(cat /proc/sys/kernel/random/uuid)
-uuid=$(cat /etc/trojan-go/idtrojango)
-sed -i '/"'""$uuid""'"$/a\,"'""$uuidR""'"' /etc/trojan-go/config.json
-echo -e "### $userna $exp $uuidR" | tee -a /etc/trojan-go/akun.conf
-linktrgo="trojan-go://${uuidR}@${domain}:${trgo}/?sni=${domain}%26type=ws%26host=${domain}%26path=/scvps%26encryption=none#${userna}"
-
-local env_msg
-env_msg="━━━━━━━━━━━━━━━━━━━━━\n<b>       🔸 TROJAN GO ACCOUNT 🔸 </b>\n━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Address : $domain\n"
-env_msg+="User : $userna\n"
-env_msg+="Expired On : $data 🗓 \n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Port : $trgo\n"
-env_msg+="Key : $uuidR\n"
-env_msg+="Network : ws\n"
-env_msg+="Path : /scvps\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Link TRGO: \n\n"
-env_msg+="<code>$linktrgo</code>\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-
-ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-    --text "$env_msg" \
-    --parse_mode html
-systemctl restart trojan-go > /dev/null 2>&1
-return 0
-}
-
-pricetrgo=$(grep -w "Price Trojan-GO" /etc/.maAsiss/price | awk '{print $NF}')
-saldores=$(grep -w "Saldo_Reseller" /etc/.maAsiss/db_reseller/${message_from_id}/${message_from_id} | awk '{print $NF}')
-urday=$(echo $pricetrgo * 2 | bc )
-if [ "$saldores" -lt "$urday" ]; then
-ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-    --text "⛔ Your Balance Not Enough ⛔" \
-    --parse_mode html
-return 0
-else
-mkdir -p /etc/.maAsiss/info-user-trgo
-mkdir -p /etc/.maAsiss/db_reseller/${message_from_id}/user_trgo
-echo "$userna:$data" >/etc/.maAsiss/db_reseller/${message_from_id}/user_trgo/$userna
-echo "$userna:$data" >/etc/.maAsiss/info-user-trgo/$userna
-_CurrSal=$(echo $saldores - $urday | bc)
-sed -i "/Saldo_Reseller/c\Saldo_Reseller: $_CurrSal" /etc/.maAsiss/db_reseller/${message_from_id}/${message_from_id}
-sed -i "/${message_from_id}/c\USER: ${message_from_id} SALDO: $_CurrSal TYPE: reseller" $User_Active
-
-uuidR=$(cat /proc/sys/kernel/random/uuid)
-uuid=$(cat /etc/trojan-go/idtrojango)
-sed -i '/"'""$uuid""'"$/a\,"'""$uuidR""'"' /etc/trojan-go/config.json
-echo -e "### $userna $exp $uuidR" | tee -a /etc/trojan-go/akun.conf
-linktrgo="trojan-go://${uuidR}@${domain}:${trgo}/?sni=${domain}%26type=ws%26host=${domain}%26path=/scvps%26encryption=none#${userna}"
-
-local env_msg
-env_msg="━━━━━━━━━━━━━━━━━━━━━\n<b>       🔸 TROJAN GO ACCOUNT 🔸 </b>\n━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Address : $domain\n"
-env_msg+="User : $userna\n"
-env_msg+="Expired On : $data 🗓 \n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Port : $trgo\n"
-env_msg+="Key : $uuidR\n"
-env_msg+="Network : ws\n"
-env_msg+="Path : /scvps\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Link TRGO: \n\n"
-env_msg+="<code>$linktrgo</code>\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-echo "$userna 60Days TROJAN-GO | ${message_from_username}" >> /etc/.maAsiss/log_res
-
-ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-    --text "$env_msg" \
-    --parse_mode html
-systemctl restart trojan-go > /dev/null 2>&1
-return 0
-fi
-}
-
-del_trgo() {
-    [[ "${callback_query_from_id[$id]}" == "$Admin_ID" ]] || [[ "$(grep -wc ${callback_query_from_id} $User_Active)" != '0' ]] && {
-        ShellBot.deleteMessage	--chat_id ${callback_query_message_chat_id[$id]} \
-              --message_id ${callback_query_message_message_id[$id]}
-        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-            --text "🗑 REMOVE USER Trojan-GO 🗑\n\nUsername:" \
-            --reply_markup "$(ShellBot.ForceReply)"
-    } || {
-        ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-            --text "⛔ ACCESS DENIED ⛔"
-        return 0
-    }
-}
-
-func_del_trgo() {
-    userna=$1
-    if [[ "${message_from_id[$id]}" = "$Admin_ID" ]]; then
-        exp=$(grep -E "^### $userna" "/etc/trojan-go/akun.conf" | cut -d ' ' -f 3 )
-        xid=$(grep -E "^### $userna" "/etc/trojan-go/akun.conf" | cut -d ' ' -f 4 )
-        echo "$xid" > /etc/trojan-go/tmp
-        bcod=`cat /etc/trojan-go/tmp`
-        sed -i '/'$bcod'/d' /etc/trojan-go/config.json
-        sed -i "/^### $userna $exp $xid/d" /etc/trojan-go/akun.conf
-        
-        datata=$(find /etc/.maAsiss/ -name $userna)
-        for accc in "${datata[@]}"
-        do
-        rm $accc
-        done
-        rm -f /etc/trojan-go/tmp
-        systemctl restart trojan-go > /dev/null 2>&1
-    elif [[ "${message_from_id[$id]}" != "$Admin_ID" ]]; then
-        [[ ! -e /etc/.maAsiss/db_reseller/${message_from_id}/user_trgo/$userna ]] && {
-            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                --text "$(echo -e "⛔ THE USER DOES NOT EXIST ⛔")" \
-                --parse_mode html
-            _erro='1'      
-            ShellBot.sendMessage --chat_id ${callack_query_message_chat_id[$id]} \
-                 --text "Func Error Do Nothing" \
-                 --reply_markup "$(ShellBot.ForceReply)"
-            return 0
-        }
-        exp=$(grep -E "^### $userna" "/etc/trojan-go/akun.conf" | cut -d ' ' -f 3 )
-        xid=$(grep -E "^### $userna" "/etc/trojan-go/akun.conf" | cut -d ' ' -f 4 )
-        echo "$xid" > /etc/trojan-go/tmp
-        bcod=`cat /etc/trojan-go/tmp`
-        sed -i '/'$bcod'/d' /etc/trojan-go/config.json
-        sed -i "/^### $userna $exp $xid/d" /etc/trojan-go/akun.conf
-        
-        rm -f /etc/.maAsiss/db_reseller/${message_from_id}/user_trgo/$userna
-        rm -f /etc/.maAsiss/info-user-trgo/$userna
-        rm -f /etc/trojan-go/tmp
-        systemctl restart trojan-go > /dev/null 2>&1
-    fi
-}
-
-add_trgo_trial() {
-    if [[ "${callback_query_from_id[$id]}" == "$Admin_ID" ]]; then
-        ShellBot.deleteMessage --chat_id ${callback_query_message_chat_id[$id]} \
-              --message_id ${callback_query_message_message_id[$id]}
-        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-            --text "👤 CREATE TRIAL Trojan-GO 👤\n\nHow many hours should it last ? EX: 1:" \
-            --reply_markup "$(ShellBot.ForceReply)"
-    elif [[ "$(grep -wc ${callback_query_from_id} $User_Active)" != '0' ]]; then
-            ShellBot.deleteMessage --chat_id ${callback_query_message_chat_id[$id]} \
-              --message_id ${callback_query_message_message_id[$id]}
-            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                --text "👤 CREATE TRIAL Trojan-GO 👤\n\nHow many hours should it last ? EX: 1:" \
-                --reply_markup "$(ShellBot.ForceReply)"       
-    else
-        ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-            --text "⛔ ACCESS DENIED ⛔"
-        return 0
-    fi
-}
-
-func_add_trgo_trial() {
-[[ "${message_from_id[$id]}" != "$Admin_ID" ]] && {
-    [[ -f /etc/.maAsiss/.cache/DisableOrderTROJANGO ]] && {
-            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                    --text "⛔ Disable Order Trojan-Go" \
-                    --parse_mode html
-            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                   --text "Func Error Do Nothing" \
-                   --reply_markup "$(ShellBot.ForceReply)"
-            return 0
-    }
-}
-
-mkdir -p /etc/.maAsiss/info-user-trgo
-    userna=$(echo Trial`</dev/urandom tr -dc A-Z0-9 | head -c4`)
-    t_time=$1
-    domain=$(cat /etc/$raycheck/domain)
-    trgo="$(cat /root/log-install.txt | grep -w "Trojan Go" | cut -d: -f2|sed 's/ //g')"
-    
-    exp=`date -d "2 days" +"%Y-%m-%d"`
-    tuserdate=$(date '+%C%y/%m/%d' -d " +2 days")
-    [[ "${message_from_id[$id]}" != "$Admin_ID" ]] && {
-       mkdir -p /etc/.maAsiss/db_reseller/${message_from_id}/trial-fold
-    }
-    [[ -z $t_time ]] && {
-        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-            --text "$(echo -e "⛔ error try again")" \
-            --parse_mode html
-        return 0
-        _erro='1'
-    }
-
-[[ "${message_from_id[$id]}" != "$Admin_ID" ]] && {
-    echo "$userna:$exp" >/etc/.maAsiss/db_reseller/${message_from_id}/user_trgo/$userna
-    echo "$userna:$exp" >/etc/.maAsiss/db_reseller/${message_from_id}/trial-fold/$userna
-}
-dir_teste="/etc/.maAsiss/db_reseller/${message_from_id}/user_trgo/$userna"
-dir_teste2="/etc/.maAsiss/db_reseller/${message_from_id}/trial-fold/$userna"
-dates=`date`
-cat <<-EOF >/etc/.maAsiss/$userna.sh
-#!/bin/bash
-# USER TRIAL TRGO by ${message_from_id} $dates
-exp=\$(grep -E "^### $userna" "/etc/trojan-go/akun.conf" | cut -d ' ' -f 3)
-xid=\$(grep -E "^### $userna" "/etc/trojan-go/akun.conf" | cut -d ' ' -f 4)
-echo "\$xid" > /etc/trojan-go/tmp
-bcod=\$(cat /etc/trojan-go/tmp)
-sed -i '/'\$bcod'/d' /etc/trojan-go/config.json
-sed -i "/^### $userna \$exp \$xid/d" /etc/trojan-go/akun.conf
-
-rm -f /etc/.maAsiss/db_reseller/${message_from_id}/user_trgo/$userna
-rm -f /etc/.maAsiss/info-user-trgo/$userna
-rm -f /etc/trojan-go/tmp
-systemctl restart trojan-go > /dev/null 2>&1
-[[ -e $dir_teste ]] && rm $dir_teste
-[[ -e $dir_teste2 ]] && rm $dir_teste2
-rm -f /etc/.maAsiss/$userna
-rm -f /etc/.maAsiss/$userna.sh
-EOF
-
-chmod +x /etc/.maAsiss/$userna.sh
-echo "/etc/.maAsiss/$userna.sh" | at now + $t_time hour >/dev/null 2>&1
-[[ "$t_time" == '1' ]] && hrs="hour" || hrs="hours"          
-
-uuidR=$(cat /proc/sys/kernel/random/uuid)
-uuid=$(cat /etc/trojan-go/idtrojango)
-sed -i '/"'""$uuid""'"$/a\,"'""$uuidR""'"' /etc/trojan-go/config.json
-echo -e "### $userna $exp $uuidR" | tee -a /etc/trojan-go/akun.conf
-linktrgo="trojan-go://${uuidR}@${domain}:${trgo}/?sni=${domain}%26type=ws%26host=${domain}%26path=/scvps%26encryption=none#${userna}"
-
-local env_msg
-env_msg="━━━━━━━━━━━━━━━━━━━━━\n<b>       🔸 TROJAN GO ACCOUNT 🔸 </b>\n━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Address : $domain\n"
-env_msg+="User : $userna\n"
-env_msg+="Expired On : $t_time $hrs ⏳ \n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Port : $trgo\n"
-env_msg+="Key : $uuidR\n"
-env_msg+="Network : ws\n"
-env_msg+="Path : /scvps\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Link TRGO: \n\n"
-env_msg+="<code>$linktrgo</code>\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-
-ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-    --text "$env_msg" \
-    --parse_mode html
-systemctl restart trojan-go > /dev/null 2>&1
-return 0
-}
-
-list_member_trgo() {
-   if [[ "${callback_query_from_id[$id]}" == "$Admin_ID" ]]; then
-      _result=$(grep -E "^### " "/etc/trojan-go/akun.conf" | cut -d ' ' -f2 | column -t | sort | uniq | wc -l)
-      _results=$(grep -E "^### " "/etc/trojan-go/akun.conf" | cut -d ' ' -f2 | column -t | sort | uniq )
-   elif [[ "${callback_query_from_id[$id]}" != "$Admin_ID" ]]; then
-      _result=$(ls /etc/.maAsiss/db_reseller/${callback_query_from_id}/user_trgo | wc -l)
-      _results=$(ls /etc/.maAsiss/db_reseller/${callback_query_from_id}/user_trgo )
-   else
-      ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-                --text "⛔ ACCESS DENIED ⛔" \
-                --parse_mode html
-      return 0
-   fi
-   if [ "$_result" = "0" ]; then
-      ShellBot.answerCallbackQuery --callback_query_id ${callback_query_id[$id]} \
-                --text "⛔ YOU DONT HAVE ANY USER YET ⛔" \
-                --parse_mode html
-      return 0
-   else
-      ShellBot.deleteMessage	--chat_id ${callback_query_message_chat_id[$id]} \
-              --message_id ${callback_query_message_message_id[$id]}
-      ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-         --text "━━━━━━━━━━━━━━━━━━━━━\n 🟢 Trojan-GO Member List 🟢\n━━━━━━━━━━━━━━━━━━━━━\n\n$_results\n\n━━━━━━━━━━━━━━━━━━━━━\n" \
-         --parse_mode html
-      return 0
-   fi
-}
-
-unset menu_trgo
-menu_trgo=''
-ShellBot.InlineKeyboardButton --button 'menu_trgo' --line 1 --text 'Add Trojan-GO' --callback_data '_add_trgo'
-ShellBot.InlineKeyboardButton --button 'menu_trgo' --line 2 --text 'Delete Trojan-GO' --callback_data '_delete_trgo'
-ShellBot.InlineKeyboardButton --button 'menu_trgo' --line 3 --text 'Create Trial Trojan-GO' --callback_data '_trial_trgo'
-ShellBot.InlineKeyboardButton --button 'menu_trgo' --line 4 --text 'List Member Trojan-GO' --callback_data '_member_trgo'
-ShellBot.InlineKeyboardButton --button 'menu_trgo' --line 6 --text '🔙 Back 🔙' --callback_data '_gobacktrgo'
-ShellBot.regHandleFunction --function add_trgo --callback_data _add_trgo
-ShellBot.regHandleFunction --function del_trgo --callback_data _delete_trgo
-ShellBot.regHandleFunction --function add_trgo_trial --callback_data _trial_trgo
-ShellBot.regHandleFunction --function list_member_trgo --callback_data _member_trgo
-ShellBot.regHandleFunction --function admin_service_see --callback_data _gobacktrgo
-unset keyboardtrgo
-keyboardtrgo="$(ShellBot.InlineKeyboardMarkup -b 'menu_trgo')"
-
-unset res_menu_trgo
-res_menu_trgo=''
-ShellBot.InlineKeyboardButton --button 'res_menu_trgo' --line 1 --text '➕ Add Trojan-GO ➕' --callback_data '_res_add_trgo'
-ShellBot.InlineKeyboardButton --button 'res_menu_trgo' --line 3 --text '⏳ Create Trial Trojan-GO ⏳' --callback_data '_res_trial_trgo'
-ShellBot.InlineKeyboardButton --button 'res_menu_trgo' --line 4 --text '🟢 List Member Trojan-GO 🟢' --callback_data '_res_member_trgo'
-ShellBot.InlineKeyboardButton --button 'res_menu_trgo' --line 5 --text '🔙 Back 🔙' --callback_data '_res_gobacktrgo'
-ShellBot.regHandleFunction --function add_trgo --callback_data _res_add_trgo
-ShellBot.regHandleFunction --function add_trgo_trial --callback_data _res_trial_trgo
-ShellBot.regHandleFunction --function list_member_trgo --callback_data _res_member_trgo
-ShellBot.regHandleFunction --function menu_reserv --callback_data _res_gobacktrgo
-unset keyboardtrgores
-keyboardtrgores="$(ShellBot.InlineKeyboardMarkup -b 'res_menu_trgo')"
 
 #====== SETTINGS DATABASE =======#
 
@@ -7137,13 +6539,7 @@ see_sys() {
         systemctl is-active --quiet stunnel4 && stsstn="Running 🟢" || stsstn="Not Running 🔴"
         systemctl is-active --quiet dropbear && stsdb="Running 🟢" || stsdb="Not Running 🔴"
         systemctl is-active --quiet $raycheck && stsray="Running 🟢" || stsray="Not Running 🔴"
-        systemctl is-active --quiet trojan-go && ststrgo="Running 🟢" || ststrgo="Not Running 🔴"
-        systemctl is-active --quiet wg-quick@wg0 && stswg="Running 🟢" || stswg="Not Running 🔴"
-        systemctl is-active --quiet shadowsocks-libev && stsss="Running 🟢" || stsss="Not Running 🔴"
-        systemctl is-active --quiet ssrmu && stsssr="Running 🟢" || stsssr="Not Running 🔴"
-        systemctl is-active --quiet accel-ppp && stssstp="Running 🟢" || stssstp="Not Running 🔴"
-        systemctl is-active --quiet pptpd && stspptp="Running 🟢" || stspptp="Not Running 🔴"
-        systemctl is-active --quiet xl2tpd && stsl2tp="Running 🟢" || stsl2tp="Not Running 🔴"
+        
 
         local env_msg
         env_msg="━━━━━━━━━━━━━━━━━━━━━\n"
@@ -7154,14 +6550,7 @@ see_sys() {
         env_msg+="Stunnel      : $stsstn\n"
         env_msg+="VMess        : $stsray\n"
         env_msg+="VLess        : $stsray\n"
-        env_msg+="Trojan       : $stsray\n"
-        env_msg+="Trojan-Go    : $ststrgo\n"
-        env_msg+="Wireguard    : $stswg\n"
-        env_msg+="SSTP         : $stssstp\n"
-        env_msg+="PPTP         : $stspptp\n"
-        env_msg+="L2TP         : $stsl2tp\n"
-        env_msg+="Shadowsocks  : $stsss\n"
-        env_msg+="Shadowsocks-R: $stsssr</code>\n"
+        env_msg+="Trojan       : $stsray</code>\n"
         env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
 [[ "${callback_query_from_id[$id]}" == "$Admin_ID" ]] || [[ "$(grep -wc ${callback_query_from_id} $User_Active)" != '0' ]] && {
         ShellBot.editMessageText --chat_id ${callback_query_message_chat_id[$id]} \
@@ -7225,13 +6614,7 @@ ShellBot.regHandleFunction --function ssh_menus --callback_data _menussh
 ShellBot.regHandleFunction --function v2ray_menus --callback_data _menuv2ray
 ShellBot.regHandleFunction --function trojan_menus --callback_data _menutrojan
 ShellBot.regHandleFunction --function vless_menus --callback_data _menuvless
-ShellBot.regHandleFunction --function wg_menus --callback_data _menuwg
-ShellBot.regHandleFunction --function ss_menus --callback_data _menuss
-ShellBot.regHandleFunction --function ssr_menus --callback_data _menussr
-ShellBot.regHandleFunction --function sstp_menus --callback_data _menusstp
-ShellBot.regHandleFunction --function l2tp_menus --callback_data _menul2tp
-ShellBot.regHandleFunction --function pptp_menus --callback_data _menupptp
-ShellBot.regHandleFunction --function trgo_menus --callback_data _menutrgo
+
 ShellBot.regHandleFunction --function menu_func_cb --callback_data _mebck
 unset menu_adm_ser1
 menu_adm_ser1="$(ShellBot.InlineKeyboardMarkup -b 'menu_adm_ser')"
@@ -7305,25 +6688,11 @@ ShellBot.InlineKeyboardButton --button 'menu_re_ser' --line 1 --text '• SSH �
 ShellBot.InlineKeyboardButton --button 'menu_re_ser' --line 2 --text '• VMess •' --callback_data '_res_v2ray_menus'
 ShellBot.InlineKeyboardButton --button 'menu_re_ser' --line 1 --text '• Trojan •' --callback_data '_res_trojan_menus'
 ShellBot.InlineKeyboardButton --button 'menu_re_ser' --line 2 --text '• VLess •' --callback_data '_res_vless_menus'
-ShellBot.InlineKeyboardButton --button 'menu_re_ser' --line 1 --text '• WireGuard •' --callback_data '_res_wg_menus'
-ShellBot.InlineKeyboardButton --button 'menu_re_ser' --line 6 --text '• ShadowSocks •' --callback_data '_res_ss_menus'
-ShellBot.InlineKeyboardButton --button 'menu_re_ser' --line 6 --text '• ShadowSocks-R •' --callback_data '_res_ssr_menus'
-ShellBot.InlineKeyboardButton --button 'menu_re_ser' --line 5 --text '• SSTP •' --callback_data '_res_sstp_menus'
-ShellBot.InlineKeyboardButton --button 'menu_re_ser' --line 5 --text '• L2TP •' --callback_data '_res_l2tp_menus'
-ShellBot.InlineKeyboardButton --button 'menu_re_ser' --line 5 --text '• PPTP •' --callback_data '_res_pptp_menus'
-ShellBot.InlineKeyboardButton --button 'menu_re_ser' --line 2 --text '• TRGO •' --callback_data '_res_trgo_menus'
 ShellBot.InlineKeyboardButton --button 'menu_re_ser' --line 10 --text '🔙 Back 🔙' --callback_data 'clses_ser_res'
 ShellBot.regHandleFunction --function res_ssh_menu --callback_data _res_ssh_menu
 ShellBot.regHandleFunction --function res_v2ray_menus --callback_data _res_v2ray_menus
 ShellBot.regHandleFunction --function res_trojan_menus --callback_data _res_trojan_menus
 ShellBot.regHandleFunction --function res_vless_menus --callback_data _res_vless_menus
-ShellBot.regHandleFunction --function res_wg_menus --callback_data _res_wg_menus
-ShellBot.regHandleFunction --function res_ss_menus --callback_data _res_ss_menus
-ShellBot.regHandleFunction --function res_ssr_menus --callback_data _res_ssr_menus
-ShellBot.regHandleFunction --function res_sstp_menus --callback_data _res_sstp_menus
-ShellBot.regHandleFunction --function res_l2tp_menus --callback_data _res_l2tp_menus
-ShellBot.regHandleFunction --function res_pptp_menus --callback_data _res_pptp_menus
-ShellBot.regHandleFunction --function res_trgo_menus --callback_data _res_trgo_menus
 ShellBot.regHandleFunction --function res_opener --callback_data clses_ser_res
 unset menu_re_ser1
 menu_re_ser1="$(ShellBot.InlineKeyboardMarkup -b 'menu_re_ser')"
@@ -7398,7 +6767,6 @@ tls="$(cat /root/log-install.txt | grep -w "Vmess TLS" | cut -d: -f2|sed 's/ //g
 none="$(cat /root/log-install.txt | grep -w "Vmess None TLS" | cut -d: -f2|sed 's/ //g')"
 tls2="$(cat /root/log-install.txt | grep -w "Vless TLS" | cut -d: -f2|sed 's/ //g')"
 none2="$(cat /root/log-install.txt | grep -w "Vless None TLS" | cut -d: -f2|sed 's/ //g')"
-trgo="$(cat /root/log-install.txt | grep -w "Trojan Go" | cut -d: -f2|sed 's/ //g')"
 tr="$(cat /root/log-install.txt | grep -w "Trojan " | cut -d: -f2|sed 's/ //g')"
 OhpSSH=`cat /root/log-install.txt | grep -w "OHP SSH" | cut -d: -f2 | awk '{print $1}'`
 OhpDB=`cat /root/log-install.txt | grep -w "OHP DBear" | cut -d: -f2 | awk '{print $1}'`
@@ -7425,7 +6793,6 @@ dx=$(ls /etc/.maAsiss/public_mode --ignore='settings' | wc -l)
    env_msg+="•OpenVPN : $portovpn\n"
    env_msg+="•UDPGW : 7100-7300\n"
    env_msg+="•Trojan TLS : $tr\n"
-   env_msg+="•Trojan-Go WS TLS : $trgo\n"
    env_msg+="•VM/VLess WS TLS : $tls,$tls2\n"
    env_msg+="•VM/VLess WS Non TLS : $none,$none2\n"
    env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
@@ -7535,7 +6902,7 @@ cat> /etc/$raycheck/$userna-tls.json <<-EOF
 "add": "${domain}",
 "port": "${tls}",
 "id": "${uuid}",
-"aid": "64",
+"aid": "0",
 "net": "ws",
 "path": "/${raycheck}ws",
 "type": "none",
@@ -7550,7 +6917,7 @@ cat> /etc/$raycheck/$userna-none.json <<-EOF
 "add": "${domain}",
 "port": "${none}",
 "id": "${uuid}",
-"aid": "64",
+"aid": "0",
 "net": "ws",
 "path": "/${raycheck}ws",
 "type": "none",
@@ -7701,68 +7068,18 @@ systemctl restart $raycheck > /dev/null 2>&1
 return 0
 }
 
-trgo_publik() {
-ShellBot.deleteMessage --chat_id ${callback_query_message_chat_id[$id]} --message_id ${callback_query_message_message_id[$id]}
-func_limit_publik ${callback_query_from_id}
-r0=$(tr -dc a-zA-Z </dev/urandom | head -c5)
-r1=$(tr -dc 0-9 </dev/urandom | head -c3)
-userna=$(echo $r0$r1)
-passw=$r1
-getDays=$(grep -w "MAX_DAYS" "/etc/.maAsiss/public_mode/settings" | awk '{print $NF}')
-data=$(date '+%d/%m/%C%y' -d " +$getDays days")
-exp=$(echo "$data" | awk -F'/' '{print $2FS$1FS$3}' | xargs -i date -d'{}' +%Y-%m-%d)
-
-domain=$(cat /etc/$raycheck/domain)
-trgo="$(cat /root/log-install.txt | grep -w "Trojan Go" | cut -d: -f2|sed 's/ //g')"
-
-uuidR=$(cat /proc/sys/kernel/random/uuid)
-uuid=$(cat /etc/trojan-go/idtrojango)
-sed -i '/"'""$uuid""'"$/a\,"'""$uuidR""'"' /etc/trojan-go/config.json
-echo -e "### $userna $exp $uuidR" | tee -a /etc/trojan-go/akun.conf
-linktrgo="trojan-go://${uuidR}@${domain}:${trgo}/?sni=${domain}%26type=ws%26host=${domain}%26path=/scvps%26encryption=none#${userna}"
-
-local env_msg
-env_msg="━━━━━━━━━━━━━━━━━━━━━\n<b>    🔸 TROJAN GO ACCOUNT 🔸 </b>\n━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Address : $domain\n"
-env_msg+="User : $userna\n"
-env_msg+="Expired On : $data 🗓 \n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Port : $trgo\n"
-env_msg+="Key : $uuidR\n"
-env_msg+="Network : ws\n"
-env_msg+="Path : /scvps\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Link TRGO: \n\n"
-env_msg+="<code>$linktrgo</code>\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-
-[[ "${callback_query_from_id[$id]}" != "$Admin_ID" ]] && {
-        mkdir -p /etc/.maAsiss/public_mode/${callback_query_from_id}
-        echo "$userna:$uuid:$data" >/etc/.maAsiss/public_mode/${callback_query_from_id}/$userna
-        echo "$userna:$uuid $getDays Days TRJ-GO | ${callback_query_from_first_name}" >> /root/log-public
-}
-
-ShellBot.sendMessage --chat_id ${callback_query_from_id[$id]} \
-    --text "$env_msg" \
-    --parse_mode html
-systemctl restart trojan-go > /dev/null 2>&1
-return 0
-
-}
 
 unset pub_menu
 pub_menu=''
 ShellBot.InlineKeyboardButton --button 'pub_menu' --line 1 --text '• VMess •' --callback_data 'vmess'
 ShellBot.InlineKeyboardButton --button 'pub_menu' --line 1 --text '• VLess •' --callback_data 'vless'
 ShellBot.InlineKeyboardButton --button 'pub_menu' --line 2 --text '• Trojan •' --callback_data 'trojan'
-ShellBot.InlineKeyboardButton --button 'pub_menu' --line 2 --text '• TrojanGO •' --callback_data 'trgo'
 ShellBot.InlineKeyboardButton --button 'pub_menu' --line 3 --text '• SSH •' --callback_data 'ssh'
 
 ShellBot.regHandleFunction --function ssh_publik --callback_data ssh
 ShellBot.regHandleFunction --function vmess_publik --callback_data vmess
 ShellBot.regHandleFunction --function vless_publik --callback_data vless
 ShellBot.regHandleFunction --function trojan_publik --callback_data trojan
-ShellBot.regHandleFunction --function trgo_publik --callback_data trgo
 
 
 unset pub_menu1
@@ -8469,741 +7786,7 @@ while :; do
                             --reply_markup "$(ShellBot.ForceReply)"
                     fi
                     ;;
-                '👤 CREATE USER WireGuard 👤\n\nUsername:')
-                    verifica_acesso
-                    [ "${message_text[$id]}" == 'root' ] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ INVALID USER")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    sizemax=$(echo -e ${#message_text[$id]})
-                    [[ "$sizemax" -gt '10' ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use no maximum 10 characters [EX: scvps]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    user_already_exist ${message_text[$id]}
-                    echo "Name: ${message_text[$id]}" >$CAD_ARQ
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'WG Validity in days: ' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'WG Validity in days:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 30]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                if ((${message_text[$id]} >= 1 && ${message_text[$id]} <= 30)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_wg $CAD_ARQ
-                elif ((${message_text[$id]} >= 30 && ${message_text[$id]} <= 60)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_wg2 $CAD_ARQ
-                else
-                    ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                        --text "$(echo -e "⛔ Can't be more than 60 Days")" \
-                        --parse_mode html
-                    >$CAD_ARQ
-                    break
-                    ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                        --text "Func Error Do Nothing" \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                fi
-                    ;;
-                '🗑 REMOVE USER WireGuard 🗑\n\nUsername:')
-                    verifica_acesso
-                    func_del_wg ${message_text[$id]}
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "✅ *Successfully removed.* 🚮" \
-                        --parse_mode markdown
-                    ;;
-                '👤 CREATE TRIAL WireGuard 👤\n\nHow many hours should it last ? EX: 1:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    [[ "${message_from_id[$id]}" != "$Admin_ID" ]] && {
-                        user_on=$(ls /etc/.maAsiss/db_reseller/${message_from_id}/trial-fold)
-                        func_verif_limite_res ${message_from_id}
-                        [[ "$_result" -ge "$_limTotal" ]] && {
-                            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                                --text "⛔ Max Limit Create Trial only $_limTotal Users\n\nYou Still Have User Active : $user_on" \
-                                --parse_mode html
-                            break
-                            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                                 --text "Func Error Do Nothing" \
-                                 --reply_markup "$(ShellBot.ForceReply)"
-                        }
-                    }
-                    if ((${message_text[$id]} == 1 || ${message_text[$id]} == 2)); then
-                        func_add_wg_trial ${message_text[$id]}
-                    else
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Trial Max Hours only 1-2")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    fi
-                    ;;
-                '👤 CREATE USER ShadowSocks 👤\n\nUsername:')
-                    verifica_acesso
-                    [ "${message_text[$id]}" == 'root' ] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ INVALID USER")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    sizemax=$(echo -e ${#message_text[$id]})
-                    [[ "$sizemax" -gt '10' ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use no maximum 10 characters [EX: scvps]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    user_already_exist ${message_text[$id]}
-                    echo "Name: ${message_text[$id]}" >$CAD_ARQ
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'SS Validity in days: ' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'SS Validity in days:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 30]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                if ((${message_text[$id]} >= 1 && ${message_text[$id]} <= 30)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_ss $CAD_ARQ
-                elif ((${message_text[$id]} >= 30 && ${message_text[$id]} <= 60)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_ss2 $CAD_ARQ
-                else
-                    ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                        --text "$(echo -e "⛔ Can't be more than 60 Days")" \
-                        --parse_mode html
-                    >$CAD_ARQ
-                    break
-                    ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                        --text "Func Error Do Nothing" \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                fi
-                    ;;
-                '🗑 REMOVE USER ShadowSocks 🗑\n\nUsername:')
-                    verifica_acesso
-                    func_del_ss ${message_text[$id]}
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "✅ *Successfully removed.* 🚮" \
-                        --parse_mode markdown
-                    ;;
-                '👤 CREATE TRIAL ShadowSocks 👤\n\nHow many hours should it last ? EX: 1:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    [[ "${message_from_id[$id]}" != "$Admin_ID" ]] && {
-                        user_on=$(ls /etc/.maAsiss/db_reseller/${message_from_id}/trial-fold)
-                        func_verif_limite_res ${message_from_id}
-                        [[ "$_result" -ge "$_limTotal" ]] && {
-                            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                                --text "⛔ Max Limit Create Trial only $_limTotal Users\n\nYou Still Have User Active : $user_on" \
-                                --parse_mode html
-                            break
-                            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                                 --text "Func Error Do Nothing" \
-                                 --reply_markup "$(ShellBot.ForceReply)"
-                        }
-                    }
-                    if ((${message_text[$id]} == 1 || ${message_text[$id]} == 2)); then
-                        func_add_ss_trial ${message_text[$id]}
-                    else
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Trial Max Hours only 1-2")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    fi
-                    ;;
-                '👤 CREATE USER Shadowsocks-R 👤\n\nUsername:')
-                    verifica_acesso
-                    [ "${message_text[$id]}" == 'root' ] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ INVALID USER")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    sizemax=$(echo -e ${#message_text[$id]})
-                    [[ "$sizemax" -gt '10' ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use no maximum 10 characters [EX: scvps]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    user_already_exist ${message_text[$id]}
-                    echo "Name: ${message_text[$id]}" >$CAD_ARQ
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'SSR Validity in days: ' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'SSR Validity in days:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 30]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                if ((${message_text[$id]} >= 1 && ${message_text[$id]} <= 30)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_ssr $CAD_ARQ
-                elif ((${message_text[$id]} >= 30 && ${message_text[$id]} <= 60)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_ssr2 $CAD_ARQ
-                else
-                    ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                        --text "$(echo -e "⛔ Can't be more than 60 Days")" \
-                        --parse_mode html
-                    >$CAD_ARQ
-                    break
-                    ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                        --text "Func Error Do Nothing" \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                fi
-                    ;;
-                '🗑 REMOVE USER Shadowsocks-R 🗑\n\nUsername:')
-                    verifica_acesso
-                    func_del_ssr ${message_text[$id]}
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "✅ *Successfully removed.* 🚮" \
-                        --parse_mode markdown
-                    ;;
-                '👤 CREATE TRIAL Shadowsocks-R 👤\n\nHow many hours should it last ? EX: 1:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    [[ "${message_from_id[$id]}" != "$Admin_ID" ]] && {
-                        user_on=$(ls /etc/.maAsiss/db_reseller/${message_from_id}/trial-fold)
-                        func_verif_limite_res ${message_from_id}
-                        [[ "$_result" -ge "$_limTotal" ]] && {
-                            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                                --text "⛔ Max Limit Create Trial only $_limTotal Users\n\nYou Still Have User Active : $user_on" \
-                                --parse_mode html
-                            break
-                            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                                 --text "Func Error Do Nothing" \
-                                 --reply_markup "$(ShellBot.ForceReply)"
-                        }
-                    }
-                    if ((${message_text[$id]} == 1 || ${message_text[$id]} == 2)); then
-                        func_add_ssr_trial ${message_text[$id]}
-                    else
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Trial Max Hours only 1-2")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    fi
-                    ;;
-                '👤 CREATE USER SSTP 👤\n\nUsername:')
-                    verifica_acesso
-                    [ "${message_text[$id]}" == 'root' ] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ INVALID USER")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    sizemax=$(echo -e ${#message_text[$id]})
-                    [[ "$sizemax" -gt '10' ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use no maximum 10 characters [EX: scvps]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    user_already_exist ${message_text[$id]}
-                    echo "Name: ${message_text[$id]}" >$CAD_ARQ
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'SSTP Password:' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'SSTP Password:')
-                    verifica_acesso
-                    echo "Password: ${message_text[$id]}" >>$CAD_ARQ
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'SSTP Validity in days: ' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'SSTP Validity in days:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 30]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                if ((${message_text[$id]} >= 1 && ${message_text[$id]} <= 30)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_sstp $CAD_ARQ
-                elif ((${message_text[$id]} >= 30 && ${message_text[$id]} <= 60)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_sstp2 $CAD_ARQ
-                else
-                    ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                        --text "$(echo -e "⛔ Can't be more than 60 Days")" \
-                        --parse_mode html
-                    >$CAD_ARQ
-                    break
-                    ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                        --text "Func Error Do Nothing" \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                fi
-                    ;;
-                '🗑 REMOVE USER SSTP 🗑\n\nUsername:')
-                    verifica_acesso
-                    func_del_sstp ${message_text[$id]}
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "✅ *Successfully removed.* 🚮" \
-                        --parse_mode markdown
-                    ;;
-                '👤 CREATE TRIAL SSTP 👤\n\nHow many hours should it last ? EX: 1:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    [[ "${message_from_id[$id]}" != "$Admin_ID" ]] && {
-                        user_on=$(ls /etc/.maAsiss/db_reseller/${message_from_id}/trial-fold)
-                        func_verif_limite_res ${message_from_id}
-                        [[ "$_result" -ge "$_limTotal" ]] && {
-                            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                                --text "⛔ Max Limit Create Trial only $_limTotal Users\n\nYou Still Have User Active : $user_on" \
-                                --parse_mode html
-                            break
-                            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                                 --text "Func Error Do Nothing" \
-                                 --reply_markup "$(ShellBot.ForceReply)"
-                        }
-                    }
-                    if ((${message_text[$id]} == 1 || ${message_text[$id]} == 2)); then
-                        func_add_sstp_trial ${message_text[$id]}
-                    else
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Trial Max Hours only 1-2")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    fi
-                    ;;
-                '👤 CREATE USER L2TP 👤\n\nUsername:')
-                    verifica_acesso
-                    [ "${message_text[$id]}" == 'root' ] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ INVALID USER")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    sizemax=$(echo -e ${#message_text[$id]})
-                    [[ "$sizemax" -gt '10' ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use no maximum 10 characters [EX: scvps]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    user_already_exist ${message_text[$id]}
-                    echo "Name: ${message_text[$id]}" >$CAD_ARQ
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'L2TP Password:' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'L2TP Password:')
-                    verifica_acesso
-                    echo "Password: ${message_text[$id]}" >>$CAD_ARQ
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'L2TP Validity in days: ' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'L2TP Validity in days:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 30]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                if ((${message_text[$id]} >= 1 && ${message_text[$id]} <= 30)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_l2tp $CAD_ARQ
-                elif ((${message_text[$id]} >= 30 && ${message_text[$id]} <= 60)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_l2tp2 $CAD_ARQ
-                else
-                    ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                        --text "$(echo -e "⛔ Can't be more than 60 Days")" \
-                        --parse_mode html
-                    >$CAD_ARQ
-                    break
-                    ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                        --text "Func Error Do Nothing" \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                fi
-                    ;;
-                '🗑 REMOVE USER L2TP 🗑\n\nUsername:')
-                    verifica_acesso
-                    func_del_l2tp ${message_text[$id]}
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "✅ *Successfully removed.* 🚮" \
-                        --parse_mode markdown
-                    ;;
-                '👤 CREATE TRIAL L2TP 👤\n\nHow many hours should it last ? EX: 1:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    [[ "${message_from_id[$id]}" != "$Admin_ID" ]] && {
-                        user_on=$(ls /etc/.maAsiss/db_reseller/${message_from_id}/trial-fold)
-                        func_verif_limite_res ${message_from_id}
-                        [[ "$_result" -ge "$_limTotal" ]] && {
-                            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                                --text "⛔ Max Limit Create Trial only $_limTotal Users\n\nYou Still Have User Active : $user_on" \
-                                --parse_mode html
-                            break
-                            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                                 --text "Func Error Do Nothing" \
-                                 --reply_markup "$(ShellBot.ForceReply)"
-                        }
-                    }
-                    if ((${message_text[$id]} == 1 || ${message_text[$id]} == 2)); then
-                        func_add_l2tp_trial ${message_text[$id]}
-                    else
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Trial Max Hours only 1-2")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    fi
-                    ;;
-                '👤 CREATE USER PPTP 👤\n\nUsername:')
-                    verifica_acesso
-                    [ "${message_text[$id]}" == 'root' ] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ INVALID USER")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    sizemax=$(echo -e ${#message_text[$id]})
-                    [[ "$sizemax" -gt '10' ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use no maximum 10 characters [EX: scvps]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    user_already_exist ${message_text[$id]}
-                    echo "Name: ${message_text[$id]}" >$CAD_ARQ
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'PPTP Password:' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'PPTP Password:')
-                    verifica_acesso
-                    echo "Password: ${message_text[$id]}" >>$CAD_ARQ
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'PPTP Validity in days: ' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'PPTP Validity in days:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 30]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                if ((${message_text[$id]} >= 1 && ${message_text[$id]} <= 30)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_pptp $CAD_ARQ
-                elif ((${message_text[$id]} >= 30 && ${message_text[$id]} <= 60)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_pptp2 $CAD_ARQ
-                else
-                    ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                        --text "$(echo -e "⛔ Can't be more than 60 Days")" \
-                        --parse_mode html
-                    >$CAD_ARQ
-                    break
-                    ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                        --text "Func Error Do Nothing" \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                fi
-                    ;;
-                '🗑 REMOVE USER PPTP 🗑\n\nUsername:')
-                    verifica_acesso
-                    func_del_pptp ${message_text[$id]}
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "✅ *Successfully removed.* 🚮" \
-                        --parse_mode markdown
-                    ;;
-                '👤 CREATE TRIAL PPTP 👤\n\nHow many hours should it last ? EX: 1:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    [[ "${message_from_id[$id]}" != "$Admin_ID" ]] && {
-                        user_on=$(ls /etc/.maAsiss/db_reseller/${message_from_id}/trial-fold)
-                        func_verif_limite_res ${message_from_id}
-                        [[ "$_result" -ge "$_limTotal" ]] && {
-                            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                                --text "⛔ Max Limit Create Trial only $_limTotal Users\n\nYou Still Have User Active : $user_on" \
-                                --parse_mode html
-                            break
-                            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                                 --text "Func Error Do Nothing" \
-                                 --reply_markup "$(ShellBot.ForceReply)"
-                        }
-                    }
-                    if ((${message_text[$id]} == 1 || ${message_text[$id]} == 2)); then
-                        func_add_pptp_trial ${message_text[$id]}
-                    else
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Trial Max Hours only 1-2")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    fi
-                    ;;
-                '👤 CREATE USER Trojan-GO 👤\n\nUsername:')
-                    verifica_acesso
-                    [ "${message_text[$id]}" == 'root' ] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ INVALID USER")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    sizemax=$(echo -e ${#message_text[$id]})
-                    [[ "$sizemax" -gt '10' ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use no maximum 10 characters [EX: scvps]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                    }
-                    user_already_exist ${message_text[$id]}
-                    echo "Name: ${message_text[$id]}" >$CAD_ARQ
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'TRGo Validity in days: ' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'TRGo Validity in days:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 30]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                if ((${message_text[$id]} >= 1 && ${message_text[$id]} <= 30)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_trgo $CAD_ARQ
-                elif ((${message_text[$id]} >= 30 && ${message_text[$id]} <= 60)); then
-                    info_data=$(date '+%d/%m/%C%y' -d " +${message_text[$id]} days")
-                    echo "Validity: $info_data" >>$CAD_ARQ
-                    func_add_trgo2 $CAD_ARQ
-                else
-                    ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                        --text "$(echo -e "⛔ Can't be more than 60 Days")" \
-                        --parse_mode html
-                    >$CAD_ARQ
-                    break
-                    ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                        --text "Func Error Do Nothing" \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                fi
-                    ;;
-                '🗑 REMOVE USER Trojan-GO 🗑\n\nUsername:')
-                    verifica_acesso
-                    func_del_trgo ${message_text[$id]}
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "✅ *Successfully removed.* 🚮" \
-                        --parse_mode markdown
-                    ;;
-                '👤 CREATE TRIAL Trojan-GO 👤\n\nHow many hours should it last ? EX: 1:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1000]")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    [[ "${message_from_id[$id]}" != "$Admin_ID" ]] && {
-                        user_on=$(ls /etc/.maAsiss/db_reseller/${message_from_id}/trial-fold)
-                        func_verif_limite_res ${message_from_id}
-                        [[ "$_result" -ge "$_limTotal" ]] && {
-                            ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                                --text "⛔ Max Limit Create Trial only $_limTotal Users\n\nYou Still Have User Active : $user_on" \
-                                --parse_mode html
-                            break
-                            ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                                 --text "Func Error Do Nothing" \
-                                 --reply_markup "$(ShellBot.ForceReply)"
-                        }
-                    }
-                    if ((${message_text[$id]} == 1 || ${message_text[$id]} == 2)); then
-                        func_add_trgo_trial ${message_text[$id]}
-                    else
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Trial Max Hours only 1-2")" \
-                            --parse_mode html
-                        >$CAD_ARQ
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    fi
-                    ;;
+                
                 '💰 Change Price 💰\n\nPrice SSH:')
                     verifica_acesso
                     [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
@@ -9269,119 +7852,7 @@ while :; do
                         --text 'Price TrojanGO:' \
                         --reply_markup "$(ShellBot.ForceReply)"
                     ;;
-                'Price TrojanGO:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1000]")" \
-                            --parse_mode html
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    echo "Price Trojan-GO : ${message_text[$id]}" >>$echotoprice
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'Price Wireguard:' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'Price Wireguard:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1000]")" \
-                            --parse_mode html
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    echo "Price Wireguard : ${message_text[$id]}" >>$echotoprice
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'Price Shadowsocks:' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'Price Shadowsocks:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1000]")" \
-                            --parse_mode html
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    echo "Price Shadowsocks : ${message_text[$id]}" >>$echotoprice
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'Price Shadowsocks-R:' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'Price Shadowsocks-R:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1000]")" \
-                            --parse_mode html
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    echo "Price Shadowsocks-R : ${message_text[$id]}" >>$echotoprice
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'Price SSTP:' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'Price SSTP:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1000]")" \
-                            --parse_mode html
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    echo "Price SSTP : ${message_text[$id]}" >>$echotoprice
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'Price L2TP:' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'Price L2TP:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1000]")" \
-                            --parse_mode html
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    echo "Price L2TP : ${message_text[$id]}" >>$echotoprice
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text 'Price PPTP:' \
-                        --reply_markup "$(ShellBot.ForceReply)"
-                    ;;
-                'Price PPTP:')
-                    verifica_acesso
-                    [[ ${message_text[$id]} != ?(+|-)+([0-9]) ]] && {
-                        ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
-                            --text "$(echo -e "⛔ Use only numbers [EX: 1000]")" \
-                            --parse_mode html
-                        break
-                        ShellBot.sendMessage --chat_id ${callback_query_message_chat_id[$id]} \
-                            --text "Func Error Do Nothing" \
-                            --reply_markup "$(ShellBot.ForceReply)"
-                    }
-                    echo "Price PPTP : ${message_text[$id]}" >>$echotoprice
-                    ShellBot.sendMessage --chat_id ${message_from_id[$id]} \
-                        --text "✅ *Successfully Updated Price List* ✅" \
-                        --parse_mode markdown
-                    mv /tmp/price /etc/.maAsiss/
-                    ;;
+                
                 '📢 Info for reseller 📢\n\ntype your information:')
                     verifica_acesso
                     echo "${message_text[$id]}" > /etc/.maAsiss/update-info
