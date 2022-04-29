@@ -4001,7 +4001,7 @@ pub_menu=''
 ShellBot.InlineKeyboardButton --button 'pub_menu' --line 1 --text '• VMess •' --callback_data 'vmess'
 ShellBot.InlineKeyboardButton --button 'pub_menu' --line 1 --text '• VLess •' --callback_data 'vless'
 ShellBot.InlineKeyboardButton --button 'pub_menu' --line 2 --text '• Trojan •' --callback_data 'trojan'
-ShellBot.InlineKeyboardButton --button 'pub_menu' --line 3 --text '• SSH •' --callback_data 'ssh'
+ShellBot.InlineKeyboardButton --button 'pub_menu' --line 2 --text '• SSH •' --callback_data 'ssh'
 
 ShellBot.regHandleFunction --function ssh_publik --callback_data ssh
 ShellBot.regHandleFunction --function vmess_publik --callback_data vmess
