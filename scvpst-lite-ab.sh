@@ -3734,72 +3734,7 @@ ShellBot.sendMessage --chat_id ${message_chat_id[$id]} \
      --parse_mode html
 }
 
-ssh_publik(){
-ShellBot.deleteMessage --chat_id ${callback_query_message_chat_id[$id]} --message_id ${callback_query_message_message_id[$id]}
-func_limit_publik ${callback_query_from_id}
-r0=$(tr -dc a-zA-Z </dev/urandom | head -c5)
-r1=$(tr -dc 0-9 </dev/urandom | head -c3)
-userna=$(echo $r0$r1)
-passw=$r1
-getDays=$(grep -w "MAX_DAYS" "/etc/.maAsiss/public_mode/settings" | awk '{print $NF}')
-data=$(date '+%d/%m/%C%y' -d " +$getDays days")
-exp=$(echo "$data" | awk -F'/' '{print $2FS$1FS$3}' | xargs -i date -d'{}' +%Y-%m-%d)
 
-if /usr/sbin/useradd -M -N -s /bin/false $userna -e $exp; then
-    (echo "${passw}";echo "${passw}") | passwd "${userna}"
-else
-    ShellBot.sendMessage --chat_id ${callback_query_chat_id[$id]} \
-            --text "⛔ ERROR CREATING USER" \
-            --parse_mode html
-    return 0
-fi
-
-[[ "${callback_query_from_id[$id]}" != "$Admin_ID" ]] && {
-        mkdir -p /etc/.maAsiss/public_mode/${callback_query_from_id}
-        echo "$userna:$passw:$data" >/etc/.maAsiss/public_mode/${callback_query_from_id}/$userna
-        echo "$userna:$passw $getDays Days SSH | ${callback_query_from_first_name}" >> /root/log-public
-}
-
-ossl=`cat /root/log-install.txt | grep -w " OpenVPN" | cut -f2 -d: | awk '{print $6}'`
-opensh=`cat /root/log-install.txt | grep -w "OpenSSH" | cut -f2 -d: | awk '{print $1}'`
-db=`cat /root/log-install.txt | grep -w "Dropbear" | cut -f2 -d: | awk '{print $1,$2}'`
-ssl="$(cat /root/log-install.txt | grep -w "Stunnel4" | cut -d: -f2)"
-sqd="$(cat /root/log-install.txt | grep -w "Squid" | cut -d: -f2)"
-ovpn="$(netstat -nlpt | grep -i openvpn | grep -i 0.0.0.0 | awk '{print $4}' | cut -d: -f2)"
-ovpn2="$(netstat -nlpu | grep -i openvpn | grep -i 0.0.0.0 | awk '{print $4}' | cut -d: -f2)"
-portsshws=`cat /root/log-install.txt | grep -w "SSH Websocket" | cut -d: -f2 | awk '{print $1}'`
-OhpSSH=`cat /root/log-install.txt | grep -w "OHP SSH" | cut -d: -f2 | awk '{print $1}'`
-OhpDB=`cat /root/log-install.txt | grep -w "OHP DBear" | cut -d: -f2 | awk '{print $1}'`
-OhpOVPN=`cat /root/log-install.txt | grep -w "OHP OpenVPN" | cut -d: -f2 | awk '{print $1}'`
-wsssl=`cat /root/log-install.txt | grep -w "SSH SSL Websocket" | cut -d: -f2 | awk '{print $1}'`
-
-local env_msg
-env_msg="━━━━━━━━━━━━━━━━━━━━━\n<b>    🔸 SSH ACCOUNT 🔸 </b>\n━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Host : $IPs \n"
-env_msg+="Username: <code>$userna</code>\n"
-env_msg+="Password: <code>$passw</code>\n"
-env_msg+="Expired On: $data 📅\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="OpenSSH : $opensh\n"
-env_msg+="Dropbear : $db\n"
-env_msg+="SSH-WS : $portsshws\n"
-env_msg+="SSH-WS-SSL : $wsssl\n"
-env_msg+="SSL/TLS : $ssl\n"
-env_msg+="OHP SSH : $OhpSSH\n"
-env_msg+="OHP Dropbear : $OhpDB\n"
-env_msg+="OHP OpenVPN : $OhpOVPN\n"
-env_msg+="Port Squid : $sqd\n"
-env_msg+="UDPGW : 7100-7900 \n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="OpenVPN Config : http://$IPs:81/\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-env_msg+="Payload WS : \n\n"
-env_msg+="<code>GET / HTTP/1.1[crlf]Host: $IPs [crlf]Connection: Keep-Alive[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]</code>\n"
-env_msg+="━━━━━━━━━━━━━━━━━━━━━\n"
-ShellBot.sendMessage --chat_id ${callback_query_from_id[$id]} \
-    --text "$env_msg" \
-    --parse_mode html
-}
 
 vmess_publik() {
 ShellBot.deleteMessage --chat_id ${callback_query_message_chat_id[$id]} --message_id ${callback_query_message_message_id[$id]}
@@ -4001,9 +3936,9 @@ pub_menu=''
 ShellBot.InlineKeyboardButton --button 'pub_menu' --line 1 --text '• VMess •' --callback_data 'vmess'
 ShellBot.InlineKeyboardButton --button 'pub_menu' --line 1 --text '• VLess •' --callback_data 'vless'
 ShellBot.InlineKeyboardButton --button 'pub_menu' --line 2 --text '• Trojan •' --callback_data 'trojan'
-ShellBot.InlineKeyboardButton --button 'pub_menu' --line 2 --text '• SSH •' --callback_data 'ssh'
 
-ShellBot.regHandleFunction --function ssh_publik --callback_data ssh
+
+
 ShellBot.regHandleFunction --function vmess_publik --callback_data vmess
 ShellBot.regHandleFunction --function vless_publik --callback_data vless
 ShellBot.regHandleFunction --function trojan_publik --callback_data trojan
